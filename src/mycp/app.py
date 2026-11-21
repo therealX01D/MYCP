@@ -5,7 +5,7 @@ from __future__ import annotations
 from mcp.server.transport_security import TransportSecuritySettings
 from starlette.applications import Starlette
 
-from . import builder
+# from . import builder
 from .auth import BearerAuthMiddleware
 from .config import Settings
 from .registry import RecordStore
@@ -27,9 +27,9 @@ def create_app(settings: Settings, store: RecordStore, *, with_builder: bool = T
     # Start from the MCP app so its lifespan (session manager) keeps running,
     # then attach the builder routes to the same app.
     app = mcp.streamable_http_app(host=settings.host, transport_security=security)
-    if with_builder:
-        app.router.routes.extend(builder.routes())
-    else:
-        app.router.routes.extend(r for r in builder.routes() if r.path == "/healthz")
+    # if with_builder:
+    #     # app.router.routes.extend(builder.routes())
+    # else:
+    #     app.router.routes.extend(r for r in builder.routes() if r.path == "/healthz")
     app.add_middleware(BearerAuthMiddleware, token=settings.token)
     return app

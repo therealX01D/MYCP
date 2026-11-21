@@ -113,7 +113,7 @@ The builder and the server are separate modules that share only the registry.
 
 ## Roadmap
 
-- [ ] **1. Skeleton:** MCP server with hardcoded `remember` and `recall` tools and a notes resource, working in Claude Desktop
+- [x] **1. Skeleton:** MCP server with hardcoded `remember` and `recall` tools and a notes resource, working in Claude Desktop
 - [ ] **2. Registry:** SQLite tables for tool specs, records and versions, with `append_record` and `query_records`
 - [ ] **3. Builder loop:** chat UI with `create_tool`, `update_tool` and `list_tools`, an approval card, and `list_changed` notifications
 - [ ] **4. Safety and polish:** versioning and rollback, a tool-count cap, schema validation, export and import
