@@ -41,10 +41,10 @@ jobs:
   guard:
     runs-on: ubuntu-latest
     steps:
-      - name: Only allow runs from main
-        if: github.ref != 'refs/heads/main'
+      - name: Only allow runs from master
+        if: github.ref != 'refs/heads/master'
         run: |
-          echo "Releases can only be run from main (got ${{ github.ref }})"
+          echo "Releases can only be run from master (got ${{ github.ref }})"
           exit 1
 
       - name: Versions must match (typo guard)
