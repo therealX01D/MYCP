@@ -4,12 +4,13 @@ from __future__ import annotations
 
 from mcp.server.transport_security import TransportSecuritySettings
 from starlette.applications import Starlette
-
-# from . import builder
+from starlette.routing import BaseRoute, Mount
+from .builder import get_builder_routes
 from .auth import BearerAuthMiddleware
 from .config import Settings
 from .registry import RecordStore
 from .server import build_server
+from contextlib import asynccontextmanager
 
 
 def create_app(settings: Settings, store: RecordStore, *, with_builder: bool = True) -> Starlette:
@@ -26,10 +27,20 @@ def create_app(settings: Settings, store: RecordStore, *, with_builder: bool = T
 
     # Start from the MCP app so its lifespan (session manager) keeps running,
     # then attach the builder routes to the same app.
-    app = mcp.streamable_http_app(host=settings.host, transport_security=security)
-    # if with_builder:
-    #     # app.router.routes.extend(builder.routes())
-    # else:
-    #     app.router.routes.extend(r for r in builder.routes() if r.path == "/healthz")
+    mcp = build_server(store)
+    mcp_asgi = mcp.streamable_http_app(host=settings.host,transport_security=security)
+
+    routes: list[BaseRoute] = []
+    @asynccontextmanager
+    async def lifespan(app: Starlette):
+        async with mcp.session_manager.run():
+            yield
+    # 1. Inject builder routes first so catch-all mounts don't swallow /healthz
+    if with_builder:
+        routes.extend(get_builder_routes())
+    # 2. Mount the MCP server
+    routes.append(Mount("/", app=mcp_asgi))
+
+    app = Starlette(routes=routes, lifespan=lifespan)
     app.add_middleware(BearerAuthMiddleware, token=settings.token)
     return app
