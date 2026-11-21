@@ -1,5 +1,8 @@
 # MYCP
 
+
+[![Tests](https://github.com/therealX01D/MYCP/actions/workflows/test.yaml/badge.svg?branch=master)](https://github.com/therealX01D/MYCP/actions/workflows/test.yaml)
+
 **A self-hosted chatbot that builds your personal MCP server as you talk to it.**
 
 Tell it what you want to track or do ("log my workouts", "keep a reading list", "save my meeting notes"), and it creates the matching tools and stores the data. Every MCP client you use (Claude Desktop, Cursor, claude.ai custom connectors, and others) gets those tools immediately, with no code written by you.

@@ -8,6 +8,10 @@ services:
     environment:
       MYCP_DB_PATH: /data/mycp.db
       MYCP_HOST: 0.0.0.0
+      MYCP_PORT: 8080
     volumes:
-      - ./data:/data
+      - mycp-data:/data
     restart: unless-stopped
+
+volumes:
+  mycp-data:
