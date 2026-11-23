@@ -1,4 +1,4 @@
-from .base import Record, RecordStore
-from .connection import SQLiteRecordStore
+from .base import RecordInput,RecordReturn,RecordQuery,RecordStore
+from .sqlite import SQLiteRecordStore,SQLiteConfig
 
-__all__ = ["Record", "RecordStore", "SQLiteRecordStore"]
+__all__ = ["RecordInput","RecordReturn","RecordQuery","RecordStore","SQLiteRecordStore","SQLiteConfig"]

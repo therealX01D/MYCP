@@ -13,15 +13,15 @@ import argparse
 import sys
 
 from .config import Settings
-from .registry import SQLiteRecordStore
+from .registry import SQLiteRecordStore,SQLiteConfig
 
 
 def _serve(settings: Settings, *, with_builder: bool) -> None:
     import uvicorn
 
     from .app import create_app
-
-    store = SQLiteRecordStore(settings.db_path)
+    config = SQLiteConfig(filepath=settings.db_path)
+    store = SQLiteRecordStore(config=config)
     app = create_app(settings, store, with_builder=with_builder)
     print(f"MYCP listening on http://{settings.host}:{settings.port}  (MCP endpoint: /mcp)")
     print(f"Bearer token: {settings.token}")
@@ -54,7 +54,7 @@ def main(argv: list[str] | None = None) -> None:
         sys.exit("The builder chat is not implemented yet (milestone 3).")
     elif args.command == "stdio":
         from .server import build_server
-        store = SQLiteRecordStore(settings.db_path)
+        store = SQLiteRecordStore(SQLiteConfig(settings.db_path))
         try:
             build_server(store).run("stdio")
         finally:
