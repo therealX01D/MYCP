@@ -42,7 +42,7 @@ class SQLiteConfig(DBConfig):
 
 class SQLiteRecordStore(RecordStore):
     def __init__(self, config:SQLiteConfig):
-        self.path = str(config.path)
+        self.path = str(config.filepath)
         # The server may call us from different threads; the lock serialises access.
         self._conn = sqlite3.connect(self.path, check_same_thread=False, timeout=10)
         self._lock = threading.Lock()
@@ -59,13 +59,13 @@ class SQLiteRecordStore(RecordStore):
                 "VALUES (?, ?, ?, ?)",
                 (obj.user_id, obj.collection, json.dumps(obj.data), created_at),
             )
-            return RecordReturn(cur.lastrowid, obj.collection, obj.data, created_at)
+            return RecordReturn(cur.lastrowid, obj.collection,obj.user_id, obj.data, created_at)
 
     def query(
         self,
         obj:RecordQuery
     ) -> list[RecordReturn]:
-        sql = "SELECT id, collection, data, created_at FROM records WHERE user_id = ? AND collection = ?"
+        sql = "SELECT id, collection, data, user_id, created_at FROM records WHERE user_id = ? AND collection = ?"
         params: list[Any] = [obj.user_id, obj.collection]
         if obj.text:
             sql += " AND data LIKE ? ESCAPE '\\'"
@@ -74,7 +74,7 @@ class SQLiteRecordStore(RecordStore):
         params.append(max(1, min(obj.limit, 200)))
         with self._lock:
             rows = self._conn.execute(sql, params).fetchall()  # fetch inside the lock
-        return [RecordReturn(r[0], r[1], json.loads(r[2]), r[3]) for r in rows]
+        return [RecordReturn(r[0], r[1], json.loads(r[2]), r[3],r[4]) for r in rows]
 
     def close(self) -> None:
         """Checkpoint the WAL and close. Safe to call more than once."""
