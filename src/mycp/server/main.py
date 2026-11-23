@@ -31,7 +31,7 @@ def build_server(store: RecordStore) -> MCPServer:
     def remember(text: str) -> str:
         """Save a note about the user. Use when the user asks you to remember
         something or states a lasting fact or preference."""
-        record:RecordReturn  = store.append(RecordInput(NOTES,current_user,{"text":text}))
+        record:RecordReturn  = store.append(RecordInput(NOTES,current_user(),{"text":text}))
         return f"Saved note #{record.id}."
 
     @mcp.tool()

@@ -16,7 +16,9 @@ def test_append_and_query(tmp_path):
 
 def test_users_and_collections_are_isolated(tmp_path):
     store = SQLiteRecordStore(SQLiteConfig(filepath=tmp_path / "t.db"))
-    store.append(RecordInput("notes","alice", {"text": "secret"}))
+    record = store.append(RecordInput("notes","alice", {"text": "secret"}))
+    assert record.user_id == "alice"
+    assert store.query(RecordQuery("notes", "alice")) == [record]
     assert store.query(RecordQuery("notes", "bob" )) == []
     assert store.query(RecordQuery("other", "alice")) == []
 
@@ -61,5 +63,5 @@ def test_data_survives_close_and_reopen(tmp_path):
     store.close()  # idempotent
 
     reopened = SQLiteRecordStore(path)
-    assert reopened.query("notes","default")[0].data["text"] == "persisted"
+    assert reopened.query(RecordQuery("notes", "default"))[0].data["text"] == "persisted"
     reopened.close()
