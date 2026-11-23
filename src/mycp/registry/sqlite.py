@@ -65,7 +65,7 @@ class SQLiteRecordStore(RecordStore):
         self,
         obj:RecordQuery
     ) -> list[RecordReturn]:
-        sql = "SELECT id, collection, data, created_at FROM records WHERE user_id = ? AND collection = ?"
+        sql = "SELECT id, collection, data, user_id, created_at FROM records WHERE user_id = ? AND collection = ?"
         params: list[Any] = [obj.user_id, obj.collection]
         if obj.text:
             sql += " AND data LIKE ? ESCAPE '\\'"
@@ -74,7 +74,7 @@ class SQLiteRecordStore(RecordStore):
         params.append(max(1, min(obj.limit, 200)))
         with self._lock:
             rows = self._conn.execute(sql, params).fetchall()  # fetch inside the lock
-        return [RecordReturn(r[0], r[1], obj.user_id, json.loads(r[2]), r[3]) for r in rows]
+        return [RecordReturn(r[0], r[1], r[3], json.loads(r[2]), r[4]) for r in rows]
 
     def close(self) -> None:
         """Checkpoint the WAL and close. Safe to call more than once."""
