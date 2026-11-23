@@ -54,7 +54,7 @@ def main(argv: list[str] | None = None) -> None:
         sys.exit("The builder chat is not implemented yet (milestone 3).")
     elif args.command == "stdio":
         from .server import build_server
-        store = SQLiteRecordStore(SQLiteConfig(settings.db_path))
+        store = SQLiteRecordStore(SQLiteConfig(filepath=settings.db_path))
         try:
             build_server(store).run("stdio")
         finally:

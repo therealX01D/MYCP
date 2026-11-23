@@ -2,7 +2,7 @@ from mycp.registry import SQLiteRecordStore,SQLiteConfig,RecordQuery,RecordInput
 
 
 def test_append_and_query(tmp_path):
-    store = SQLiteRecordStore(SQLiteConfig((tmp_path / "t.db")))
+    store = SQLiteRecordStore(SQLiteConfig(filepath=tmp_path / "t.db"))
     
     store.append(RecordInput("notes","default", {"text": "I prefer dark mode"}))
     store.append(RecordInput("notes","default",  {"text": "My cat is called Miso"}))
@@ -15,14 +15,14 @@ def test_append_and_query(tmp_path):
 
 
 def test_users_and_collections_are_isolated(tmp_path):
-    store = SQLiteRecordStore(SQLiteConfig((tmp_path / "t.db")))
+    store = SQLiteRecordStore(SQLiteConfig(filepath=tmp_path / "t.db"))
     store.append(RecordInput("notes","alice", {"text": "secret"}))
     assert store.query(RecordQuery("notes", "bob" )) == []
     assert store.query(RecordQuery("other", "alice")) == []
 
 
 def test_like_wildcards_are_escaped(tmp_path):
-    store = SQLiteRecordStore(SQLiteConfig((tmp_path / "t.db")))
+    store = SQLiteRecordStore(SQLiteConfig(filepath=tmp_path / "t.db"))
     store.append(RecordInput("notes","default",  {"text": "100% done"}))
     store.append(RecordInput("notes","default",  {"text": "nothing here"}))
     assert len(store.query(RecordQuery("notes","default", text="%"))) == 1
@@ -31,7 +31,7 @@ def test_like_wildcards_are_escaped(tmp_path):
 def test_concurrent_appends_from_many_threads(tmp_path):
     import threading
 
-    store = SQLiteRecordStore(SQLiteConfig((tmp_path / "t.db")))
+    store = SQLiteRecordStore(SQLiteConfig(filepath=tmp_path / "t.db"))
     errors = []
 
     def worker(n):
@@ -54,7 +54,7 @@ def test_concurrent_appends_from_many_threads(tmp_path):
 
 
 def test_data_survives_close_and_reopen(tmp_path):
-    path = SQLiteConfig((tmp_path / "t.db"))
+    path = SQLiteConfig(filepath=tmp_path / "t.db")
     store = SQLiteRecordStore(path)
     store.append(RecordInput("notes","default",  {"text": "persisted"}))
     store.close()

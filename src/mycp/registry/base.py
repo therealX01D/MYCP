@@ -31,7 +31,7 @@ class RecordQuery:
     text: str | None = None
     limit: int = 20
 
-@dataclass(frozen=True, kw_only=True)
+@dataclass(frozen=True)
 class DBConfig(ABC):
     """Abstract base config shared by all databases."""
     timeout: float = 10.0
