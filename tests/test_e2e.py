@@ -13,7 +13,7 @@ from mcp.client.streamable_http import create_mcp_http_client, streamable_http_c
 
 from mycp.app import create_app
 from mycp.config import Settings
-from mycp.registry import SQLiteRecordStore
+from mycp.registry import SQLiteRecordStore,SQLiteConfig
 
 TOKEN = "test-token"
 
@@ -28,7 +28,7 @@ def _free_port() -> int:
 def base_url(tmp_path):
     port = _free_port()
     settings = Settings(db_path=tmp_path / "e2e.db", port=port, token=TOKEN)
-    store = SQLiteRecordStore(settings.db_path)
+    store = SQLiteRecordStore(SQLiteConfig(filepath=settings.db_path))
     app = create_app(settings, store)
     server = uvicorn.Server(uvicorn.Config(app, host="127.0.0.1", port=port, log_level="warning"))
     thread = threading.Thread(target=server.run, daemon=True)
