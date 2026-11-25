@@ -11,25 +11,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Protocol
 from abc import ABC, abstractmethod
-
-@dataclass(frozen=True)
-class RecordReturn:
-    id: int
-    collection: str
-    user_id: str
-    data: dict[str, Any]
-    created_at: str
-@dataclass(frozen=True)
-class RecordInput:
-    collection: str
-    user_id: str
-    data: dict[str, Any]
-@dataclass(frozen=True)
-class RecordQuery:
-    collection: str
-    user_id: str
-    text: str | None = None
-    limit: int = 20
+from .scheme import RecordReturn, RecordQuery, RecordInput
 
 @dataclass(frozen=True)
 class DBConfig(ABC):

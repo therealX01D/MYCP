@@ -14,9 +14,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from .base import RecordInput,RecordReturn,RecordQuery,RecordStore,DBConfig
+from .base import RecordStore,DBConfig
 from dataclasses import dataclass
-
+from .scheme import RecordInput,RecordReturn,RecordQuery
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS records (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
