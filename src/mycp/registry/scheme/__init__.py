@@ -1,1 +1,1 @@
-from .record import RecordInput,RecordQuery,RecordReturn
+from .record import RecordBase,BaseModel
